@@ -1,0 +1,746 @@
+C:\Users\Govind>mongosh
+
+test> use school
+switched to db school
+school> db.createCollection("students")
+{ ok: 1 }
+school> db.students.insertOne({"_id":1,"Fname":"Govind","Lname":"Parab","marks":[50,40,45],"device":{"type":"laptop","ram":4}})
+{ acknowledged: true, insertedId: 1 }
+db.students.insertMany([{"_id":2,"Fname":"Ruchi","Lname":"Rane","marks":[35,50,50],"device":{"type":"computer","ram":8}},{"_id":3,"Fname":"Trisha","Lname":"Niwate","marks":[38,45,49],"device":{"type":"laptop","ram":12}}]);
+{ acknowledged: true, insertedIds: { '0': 2, '1': 3 } }
+school> db.students.findOne({"_id":3},{})
+{
+  _id: 3,
+  Fname: 'Trisha',
+  Lname: 'Niwate',
+  marks: [ 38, 45, 49 ],
+  device: { type: 'laptop', ram: 12 }
+}
+
+school> db.students.find({"device.ram":{$gte:8}},{"_id":0,"Fname":1,"Lname":1})
+[
+  { Fname: 'Ruchi', Lname: 'Rane' },
+  { Fname: 'Trisha', Lname: 'Niwate' }
+]
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.findOne({"marks":{$eq:50}},{});
+{
+  _id: 1,
+  Fname: 'Govind',
+  Lname: 'Parab',
+  marks: [ 50, 40, 45 ],
+  device: { type: 'laptop', ram: 4 }
+}
+school> db.students.findOne({"device.type":{$ne:"laptop"}},{});
+{
+  _id: 2,
+  Fname: 'Ruchi',
+  Lname: 'Rane',
+  marks: [ 35, 50, 50 ],
+  device: { type: 'computer', ram: 8 }
+}
+school> db.students.findOne({"device.ram":{$gt:4}},{});
+{
+  _id: 2,
+  Fname: 'Ruchi',
+  Lname: 'Rane',
+  marks: [ 35, 50, 50 ],
+  device: { type: 'computer', ram: 8 }
+}
+school> db.students.find({"device.ram":{$gte:8}},{});
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"device.ram":{$lte:8}},{});
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({"device.ram":{$lt:8}},{});
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  }
+]
+school> db.students.find({"device.ram":{$gt:8}},{});
+[
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"device.ram":{$in:[4,12]}},{});
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"device.ram":{$nin:[4,12]}},{});
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({"marks.0":{$lt:40}},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+
+school> db.students.find({$and:[{"device.type":"laptop"},{"device.ram":{$gt:8}}]},{})
+[
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({$or:[{"device.type":"laptop"},{"device.ram":{$gt:8}}]},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({$nor:[{"device.type":"laptop"},{"device.ram":{$gt:8}}]},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({"marks.0":{$not:{$gt:40}}},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"marks.0":{$not:{$gt:40}},"device.type":{$not:{$eq:"laptop"}}},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({"Fname":{$not:/^Ru+/}},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"Fname":{$exists:true}},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"Fname":{$type:"string"}},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"marks":{$size:3}},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"marks":{$all:[35,50,50]}},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+
+school> db.students.find({"marks":{$elemMatch:{$gt:45}}},{})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({"marks":{$elemMatch:{$lt:40}}},{})
+[
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({},{}).sort({Fname:1})
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.find({},{}).sort({Lname:1})
+[
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  },
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({},{}).sort({Lname:1}).skip(1)
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  }
+]
+school> db.students.find({},{}).sort({Lname:1}).skip(1).limit(1)
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  }
+]
+school> db.students.updateOne({"Fname":"Govind"},{$set:{"marks.1":45}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 45, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 50, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 45, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+
+school> db.students.updateMany({"Fname":{$exists:true}},{$inc:{"marks.1":-5}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 3,
+  modifiedCount: 3,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 45, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.updateMany({"_id":2},{$min:{"marks.1":30}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 30, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.updateMany({"_id":2},{$max:{"marks.1":40}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { type: 'computer', ram: 8 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.updateMany({"_id":2},{$mul:{"deice.ram":2}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { type: 'computer', ram: 8 },
+    deice: { ram: 0 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.updateMany({"_id":2},{$mul:{"device.ram":2}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { type: 'computer', ram: 16 },
+    deice: { ram: 0 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+
+school> db.students.updateOne({"_id":2},{$unset:{"device.type":""}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { ram: 16 },
+    deice: { ram: 0 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+
+school> db.students.updateOne({"_id":2},{$unset:{"deice":""}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Fname: 'Ruchi',
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { ram: 16 }
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school> db.students.updateOne({"_id":2},{$rename:{"Fname":"FirstName"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+school> db.students.find()
+[
+  {
+    _id: 1,
+    Fname: 'Govind',
+    Lname: 'Parab',
+    marks: [ 50, 40, 45 ],
+    device: { type: 'laptop', ram: 4 }
+  },
+  {
+    _id: 2,
+    Lname: 'Rane',
+    marks: [ 35, 40, 50 ],
+    device: { ram: 16 },
+    FirstName: 'Ruchi'
+  },
+  {
+    _id: 3,
+    Fname: 'Trisha',
+    Lname: 'Niwate',
+    marks: [ 38, 40, 49 ],
+    device: { type: 'laptop', ram: 12 }
+  }
+]
+school>
